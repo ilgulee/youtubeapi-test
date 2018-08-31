@@ -10,18 +10,18 @@ const SCOPES = 'https://www.googleapis.com/auth/youtube.readonly';
 
 const authorizeButton = document.getElementById('authorize-button');
 const signoutButton = document.getElementById('signout-button');
-const content=document.getElementById('content');
-const channelForm=document.getElementById('channel-form');
-const channelInput=document.getElementById('channel-input');
-const videoContainer=document.getElementById('video-container');
-const defaultChannel='GoogleDevelopers';
+const content = document.getElementById('content');
+const channelForm = document.getElementById('channel-form');
+const channelInput = document.getElementById('channel-input');
+const videoContainer = document.getElementById('video-container');
+const defaultChannel = 'jypentertainment';
 // const channelData=document.getElementById('channel-data');
 
 /**
  *  On load, called to load the auth2 library and API client library.
  */
 function handleClientLoad() {
-  gapi.load('client:auth2', initClient);
+    gapi.load('client:auth2', initClient);
 }
 
 /**
@@ -29,19 +29,19 @@ function handleClientLoad() {
  *  listeners.
  */
 function initClient() {
-  gapi.client.init({
-    discoveryDocs: DISCOVERY_DOCS,
-    clientId: CLIENT_ID,
-    scope: SCOPES
-  }).then(function () {
-    // Listen for sign-in state changes.
-    gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+    gapi.client.init({
+        discoveryDocs: DISCOVERY_DOCS,
+        clientId: CLIENT_ID,
+        scope: SCOPES
+    }).then(function () {
+        // Listen for sign-in state changes.
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
 
-    // Handle the initial sign-in state.
-    updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-    authorizeButton.onclick = handleAuthClick;
-    signoutButton.onclick = handleSignoutClick;
-  });
+        // Handle the initial sign-in state.
+        updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+        authorizeButton.onclick = handleAuthClick;
+        signoutButton.onclick = handleSignoutClick;
+    });
 }
 
 /**
@@ -49,32 +49,38 @@ function initClient() {
  *  appropriately. After a sign-in, the API is called.
  */
 function updateSigninStatus(isSignedIn) {
-  if (isSignedIn) {
-    authorizeButton.style.display = 'none';
-    signoutButton.style.display = 'block';
-    content.style.display='block';
-    videoContainer.style.display='block';
-    getChannel(defaultChannel);
-  } else {
-    authorizeButton.style.display = 'block';
-    signoutButton.style.display = 'none';
-    videoContainer.style.display='none';
-  }
+    if (isSignedIn) {
+        authorizeButton.style.display = 'none';
+        signoutButton.style.display = 'block';
+        content.style.display = 'block';
+        videoContainer.style.display = 'block';
+        getChannel(defaultChannel);
+    } else {
+        authorizeButton.style.display = 'block';
+        signoutButton.style.display = 'none';
+        videoContainer.style.display = 'none';
+    }
 }
 
 /**
  *  Sign in the user upon button click.
  */
 function handleAuthClick(event) {
-  gapi.auth2.getAuthInstance().signIn();
+    gapi.auth2.getAuthInstance().signIn();
 }
 
 /**
  *  Sign out the user upon button click.
  */
 function handleSignoutClick(event) {
-  gapi.auth2.getAuthInstance().signOut();
+    gapi.auth2.getAuthInstance().signOut();
 }
+
+function showChannelData(data) {
+    const channelData = document.getElementById('channel-data');
+    channelData.innerHTML = data;
+}
+
 
 /**
  * Append text to a pre element in the body, adding the given message
@@ -92,18 +98,30 @@ function handleSignoutClick(event) {
  * Print files.
  */
 function getChannel(defaultChannel) {
-  gapi.client.youtube.channels.list({
-    'part': 'snippet,contentDetails,statistics',
-    'forUsername': defaultChannel
-  }).then(response=> {
-      console.log(response);
-      const channel=response.result.items[0];
-      console.log(channel);
-    // var channel = response.result.items[0];
-    // appendPre('This channel\'s ID is ' + channel.id + '. ' +
-    //           'Its title is \'' + channel.snippet.title + ', ' +
-    //           'and it has ' + channel.statistics.viewCount + ' views.');
-  }).catch(err=>{
-      alert(err);
-  });
+    gapi.client.youtube.channels.list({
+        'part': 'snippet,contentDetails,statistics',
+        'forUsername': defaultChannel
+    }).then(response => {
+        const channel = response.result.items[0];
+        console.log(channel);
+        const output = `
+        <ul class="collection">
+         <li class="collection-item">Title: ${channel.snippet.title}</li>
+         <li class="collection-item">Channel ID: ${channel.id}</li>
+         <li class="collection-item">Subscirbers: ${channel.statistics.subscriberCount}</li>
+         <li class="collection-item">Views: ${channel.statistics.viewCount}</li>
+         <li class="collection-item">Videos: ${channel.statistics.videoCount}</li>
+        </ul>
+        <p>${channel.snippet.description}</p>
+        <hr>
+        <a class="btn grey darken-2" target="_blank" href="http://youtube.com/${channel.snippet.customUrl}">Visit Channel</a>
+        `;
+        showChannelData(output);
+        // var channel = response.result.items[0];
+        // appendPre('This channel\'s ID is ' + channel.id + '. ' +
+        //           'Its title is \'' + channel.snippet.title + ', ' +
+        //           'and it has ' + channel.statistics.viewCount + ' views.');
+    }).catch(err => {
+        alert(err);
+    });
 }
