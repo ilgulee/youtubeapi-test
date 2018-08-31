@@ -107,6 +107,7 @@ function getChannel(channel) {
         'part': 'snippet,contentDetails,statistics',
         'forUsername': channel
     }).then(response => {
+        console.log(response);
         let channel = response.result.items[0];
         console.log(channel);
         const output = `
@@ -122,6 +123,8 @@ function getChannel(channel) {
         <a class="btn grey darken-2" target="_blank" href="http://youtube.com/${channel.snippet.customUrl}">Visit Channel</a>
         `;
         showChannelData(output);
+        const playlistId=channel.contentDetails.relatedPlaylists.uploads;
+        requestVideoPlaylists(playlistId);
         // var channel = response.result.items[0];
         // appendPre('This channel\'s ID is ' + channel.id + '. ' +
         //           'Its title is \'' + channel.snippet.title + ', ' +
@@ -133,3 +136,13 @@ function getChannel(channel) {
 function numberWithCommas(x){
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
+
+function requestVideoPlaylists(playlistId){
+    const requestOptions={
+        playlistId:playlistId,
+        part:'snippet',
+        maxResults:20
+    }
+    const request=gapi.client.youtube.playlistItems.list(requestOptions);
+    console.log(request);
+}
