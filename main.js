@@ -97,6 +97,8 @@ function getChannel(defaultChannel) {
     'forUsername': defaultChannel
   }).then(response=> {
       console.log(response);
+      const channel=response.result.item[0];
+      console.log(channel);
     // var channel = response.result.items[0];
     // appendPre('This channel\'s ID is ' + channel.id + '. ' +
     //           'Its title is \'' + channel.snippet.title + ', ' +
