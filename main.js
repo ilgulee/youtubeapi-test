@@ -16,9 +16,9 @@ const channelInput = document.getElementById('channel-input');
 const videoContainer = document.getElementById('video-container');
 const defaultChannel = 'jypentertainment';
 
-channelForm.addEventListener('submit',e=>{
+channelForm.addEventListener('submit', e => {
     e.preventDefault();
-    let channel=channelInput.value;
+    let channel = channelInput.value;
     getChannel(channel);
 });
 
@@ -113,9 +113,9 @@ function getChannel(channel) {
         <ul class="collection">
          <li class="collection-item">Title: ${channel.snippet.title}</li>
          <li class="collection-item">Channel ID: ${channel.id}</li>
-         <li class="collection-item">Subscirbers: ${channel.statistics.subscriberCount}</li>
-         <li class="collection-item">Views: ${channel.statistics.viewCount}</li>
-         <li class="collection-item">Videos: ${channel.statistics.videoCount}</li>
+         <li class="collection-item">Subscirbers: ${numberWithCommas(channel.statistics.subscriberCount)}</li>
+         <li class="collection-item">Views: ${numberWithCommas(channel.statistics.viewCount)}</li>
+         <li class="collection-item">Videos: ${numberWithCommas(channel.statistics.videoCount)}</li>
         </ul>
         <p>${channel.snippet.description}</p>
         <hr>
@@ -130,3 +130,6 @@ function getChannel(channel) {
         alert(err);
     });
 }
+function numberWithCommas(x){
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
