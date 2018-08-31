@@ -92,13 +92,16 @@ function handleSignoutClick(event) {
  * Print files.
  */
 function getChannel(defaultChannel) {
-//   gapi.client.youtube.channels.list({
-//     'part': 'snippet,contentDetails,statistics',
-//     'forUsername': defaultChannel
-//   }).then(function(response) {
-//     var channel = response.result.items[0];
-//     appendPre('This channel\'s ID is ' + channel.id + '. ' +
-//               'Its title is \'' + channel.snippet.title + ', ' +
-//               'and it has ' + channel.statistics.viewCount + ' views.');
-//   });
+  gapi.client.youtube.channels.list({
+    'part': 'snippet,contentDetails,statistics',
+    'forUsername': defaultChannel
+  }).then(response=> {
+      console.log(response);
+    // var channel = response.result.items[0];
+    // appendPre('This channel\'s ID is ' + channel.id + '. ' +
+    //           'Its title is \'' + channel.snippet.title + ', ' +
+    //           'and it has ' + channel.statistics.viewCount + ' views.');
+  }).catch(err=>{
+      alert(err);
+  });
 }
