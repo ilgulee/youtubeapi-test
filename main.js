@@ -145,4 +145,7 @@ function requestVideoPlaylists(playlistId){
     }
     const request=gapi.client.youtube.playlistItems.list(requestOptions);
     console.log(request);
+    request.execute(response=>{
+        console.log(response);
+    });
 }
