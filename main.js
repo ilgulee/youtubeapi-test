@@ -15,7 +15,12 @@ const channelForm = document.getElementById('channel-form');
 const channelInput = document.getElementById('channel-input');
 const videoContainer = document.getElementById('video-container');
 const defaultChannel = 'jypentertainment';
-// const channelData=document.getElementById('channel-data');
+
+channelForm.addEventListener('submit',e=>{
+    e.preventDefault();
+    let channel=channelInput.value;
+    getChannel(channel);
+});
 
 /**
  *  On load, called to load the auth2 library and API client library.
@@ -97,12 +102,12 @@ function showChannelData(data) {
 /**
  * Print files.
  */
-function getChannel(defaultChannel) {
+function getChannel(channel) {
     gapi.client.youtube.channels.list({
         'part': 'snippet,contentDetails,statistics',
-        'forUsername': defaultChannel
+        'forUsername': channel
     }).then(response => {
-        const channel = response.result.items[0];
+        let channel = response.result.items[0];
         console.log(channel);
         const output = `
         <ul class="collection">
